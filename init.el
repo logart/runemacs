@@ -17,7 +17,7 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			("org" . "https://orgmode.org/elpa/")
+			 ("org" . "https://orgmode.org/elpa/")
 			("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
@@ -30,6 +30,17 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+
+;; turn on line numbers
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+;;disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;this shows keypresses to easily demostrate emacs on public
 (use-package command-log-mode)
@@ -55,7 +66,44 @@
 ;;for whatever reason ivy does not start without this command even though it should have beenexecuted on the previous line
 (ivy-mode 1)
 
+;;tweak bottom info bar to look nicer
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
+
+(use-package doom-themes)
+
+;;make brackets more rainbowish to see better corresponding bracket
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;;show help on keybinding
+(use-package which-key
+     :init (which-key-mode)
+     :diminish which-key-mode
+     :config (setq which-key-idle-delay 0.3))
+
+;;show info on command available under M-x
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history))
+  :config
+  (setq ivy-initial-inputs-alist nil))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
