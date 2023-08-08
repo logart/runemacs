@@ -66,6 +66,10 @@
 ;;for whatever reason ivy does not start without this command even though it should have beenexecuted on the previous line
 (ivy-mode 1)
 
+;;to make icon work you need to run
+;;M-x all-the-icons-install-fonts
+(use-package all-the-icons)
+
 ;;tweak bottom info bar to look nicer
 (use-package doom-modeline
   :ensure t
@@ -73,6 +77,9 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes)
+
+;;load better theme
+(load-theme 'doom-ir-black t)
 
 ;;make brackets more rainbowish to see better corresponding bracket
 (use-package rainbow-delimiters
